@@ -18,4 +18,8 @@ Route::prefix('/v1')->group(function () {
     Route::get('candidates', [CandidateController::class, 'index'])->name('candidate.data');
     Route::post('candidates', [CandidateController::class, 'store'])->name('candidate.store');
     Route::delete('candidates/{id}', [CandidateController::class, 'destroy'])->name('candidate.destroy');
+
+    Route::get('jobs', [JobsController::class, 'index'])->name('jobs.data');
+    Route::get('skills', [SkillsController::class, 'index'])->name('skills.data');
+
 });
