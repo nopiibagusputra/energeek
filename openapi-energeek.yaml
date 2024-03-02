@@ -1,0 +1,211 @@
+openapi: 3.0.0
+info:
+  title: Energeek
+  version: 0.0.1
+servers:
+  - url: http://127.0.0.1:8000/api
+paths:
+  /v1/candidates:
+    get:
+      operationId: candidate.data
+      summary: Display a listing of the resource
+      tags:
+        - Candidate
+      responses:
+        '200':
+          description: Array of `CandidateResources`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CandidateResources'
+                required:
+                  - data
+    post:
+      operationId: candidate.store
+      summary: Store a newly created resource in storage
+      tags:
+        - Candidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                jobsId:
+                  type: integer
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone:
+                  type: number
+                year:
+                  type: number
+              required:
+                - jobsId
+                - name
+                - email
+                - phone
+                - year
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Customer created successfully
+                required:
+                  - message
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Data sudah ada dengan email dan jabatan yang sama
+                required:
+                  - error
+        '422':
+          $ref: '#/components/responses/ValidationException'
+  /v1/candidates/{id}:
+    delete:
+      operationId: candidate.destroy
+      summary: Remove the specified resource from storage
+      tags:
+        - Candidate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Candidate deleted successfully
+                required:
+                  - message
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Candidate not found
+                required:
+                  - message
+  /v1/jobs:
+    get:
+      operationId: jobs.data
+      summary: Display a listing of the resource
+      tags:
+        - Jobs
+      responses:
+        '200':
+          description: Array of `JobsResources`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/JobsResources'
+                required:
+                  - data
+  /v1/skills:
+    get:
+      operationId: skills.data
+      summary: Display a listing of the resource
+      tags:
+        - Skills
+      responses:
+        '200':
+          description: Array of `SkillsResources`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SkillsResources'
+                required:
+                  - data
+components:
+  schemas:
+    CandidateResources:
+      type: object
+      properties:
+        jobsId:
+          type: string
+        jobsName:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        year:
+          type: string
+      required:
+        - jobsId
+        - jobsName
+        - name
+        - email
+        - phone
+        - year
+      title: CandidateResources
+    JobsResources:
+      type: string
+      title: JobsResources
+    SkillsResources:
+      type: string
+      title: SkillsResources
+  responses:
+    ValidationException:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Errors overview.
+              errors:
+                type: object
+                description: A detailed description of each field that failed validation.
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+            required:
+              - message
+              - errors
