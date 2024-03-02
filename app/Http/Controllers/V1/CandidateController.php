@@ -30,6 +30,16 @@ class CandidateController extends Controller
      */
     public function store(AddCandidateRequest $request)
     {
+        $cekCandidate = Candidates::where('email', $request->email)
+                                    ->where('jobs_id', $request->jobsId)
+                                    ->first();
+
+        if ($cekCandidate) {
+            return response()->json([
+                'error' => 'Data sudah ada dengan email dan jabatan yang sama'
+            ], 400);
+        }
+
         Candidates::create([
             'jobs_id'   => $request->jobsId,
             'name'      => $request->name,
